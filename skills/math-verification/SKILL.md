@@ -14,6 +14,7 @@ description: "수학 풀이를 Python+SymPy로 독립 검산하는 규약. 최�
 4. **단계 점검** — solver의 각 변형을 `simplify(lhs - rhs) == 0`로 항등 확인. 한 단계라도 거짓이면 그 단계가 오류(답이 우연히 맞아도 FAIL).
 5. **정의역·외래근** — `solve` 결과 중 분모 0·진수≤0·범위 밖 해가 버려졌는지 확인.
 6. **단위·차원** — 실생활/도형 문제는 단위 일관성과 최종 단위를 확인.
+7. **학년 적합성(눈높이 가드)** — 풀이·설명 텍스트를 `math-solving/scripts/grade_check.py`로 점검해, 해당 학년이 아직 안 배운 도구(초등 풀이의 문자방정식·근호·지수, 중1·2의 삼각·미적분 등)가 섞이지 않았는지 본다. 걸리면 **WARN**으로 solver/explainer에 되돌려 학년 내 도구로 다시 쓰게 한다.
 
 ## scripts/verify.py 사용
 반복 패턴(등가 확인, 방정식 해 대조, 수치 표본 검증, 단계 항등 체크)을 헬퍼로 번들했다. 직접 sympy를 써도 되지만, 헬퍼가 출력 형식을 통일해 리포트 작성이 쉽다.
@@ -27,9 +28,11 @@ python skills/math-verification/scripts/verify.py --help
 - `sample_identity(expr_a, expr_b, var, samples)` — 무작위/지정 표본 대입으로 항등식 점검.
 - `check_steps(steps)` — `[(lhs, rhs), ...]` 단계별 항등 일괄 점검.
 
+**학년 가드:** `math-solving/scripts/grade_check.py`의 `check(grade, text)`로 풀이/설명에 학년 초과 도구가 없는지 본다. `python skills/math-solving/scripts/grade_check.py 중2 "<풀이텍스트>"`로도 직접 확인.
+
 ## 판정 기준
 - **PASS:** 최종답 일치 + 모든 단계 항등 + 정의역/단위 정상.
-- **WARN:** 답·단계는 맞으나 학년 범위 초과, 표기 부정확, 정의역 명시 누락 등 비치명적.
+- **WARN:** 답·단계는 맞으나 **학년 범위 초과(grade_check 적발)**, 표기 부정확, 정의역 명시 누락 등 비치명적 — 단, 학년 초과는 학생에게 가기 전 반드시 학년 내 도구로 다시 쓰게 한다(눈높이 약속).
 - **FAIL:** 최종답 불일치, 또는 답은 맞아도 단계에 거짓 변형, 또는 정의역 위반(외래근 포함/유효근 누락).
 
 ## 출력 (리포트)

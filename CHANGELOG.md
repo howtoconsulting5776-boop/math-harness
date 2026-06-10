@@ -3,6 +3,29 @@
 All notable changes to **math-harness** are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow [SemVer](https://semver.org/).
 
+## [0.3.0] — 2026-06-10
+
+### Added — correctness & grade-fit enforced by code (review of Codex's docs PR)
+- **Regression test suite (`tests/`)** that makes "no wrong solution reaches a student"
+  executable: `test_verify.py` asserts the verifier **rejects** extraneous roots, missing
+  roots, false identities, and broken steps (and accepts correct work); `test_geometry.py`
+  checks coordinate-geometry measurements; `test_grade_check.py` checks the grade linter.
+  Runs under `pytest` or the dependency-free `tests/run_tests.py`. 30 tests.
+- **`grade_check.py` linter** (`skills/math-solving/scripts/`) — flags above-grade notation
+  in a solution/explanation (e.g. variable equations or `√` in an elementary answer, trig
+  before 중3, calculus in middle school). Wired into `math-verifier` (QA step) and the
+  `math-solving`/`math-explanation` self-checks.
+- **`math-tutor` 두 철칙** made explicit: never present an unverified solution as correct;
+  never use above-grade tools — verified-but-unintelligible still counts as failure.
+
+### Changed
+- CI smoke workflow now **runs the test suite as the real gate** (it previously only ran
+  demos, which pass even when `verify.py` prints example `FAIL` lines). Installs pytest.
+- Renamed Codex's draft files to canonical names: `smoke_new.yml` → `smoke.yml`,
+  `ROADMAP_new.md` → `ROADMAP.md`, `quality_gates_new.md` → `quality-gates.md`; fixed all
+  references and the `fig_new.svg` demo path.
+- `quality-gates.md` rewritten to distinguish the gating test suite from illustrative demos.
+
 ## [0.2.1] — 2026-06-10
 
 ### Added

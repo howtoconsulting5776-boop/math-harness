@@ -1,0 +1,41 @@
+name: Smoke
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install sympy pytest svglib
+
+      # 진짜 게이트: 회귀 테스트. 검산기가 오답을 못 잡거나, 도형 측정/학년
+      # 린터가 깨지면 여기서 실패하여 CI가 빨간불이 된다.
+      - name: Run regression test suite
+        run: python -m pytest -q tests/
+
+      # 백업 게이트(의존성 최소 환경에서도 동일 결과 보장)
+      - name: Run stdlib runner
+        run: python tests/run_tests.py
+
+      # 번들 도구가 깨끗한 환경에서 실행되는지 확인(데모)
+      - name: Smoke the bundled tools
+        run: |
+          python skills/math-verification/scripts/verify.py --demo
+          python skills/geometry-figures/scripts/geo_verify.py --demo
+          python skills/geometry-figures/scripts/svg_figure.py --demo fig.svg
+          python skills/problem-bank/scripts/bank.py --demo
+          python skills/math-solving/scripts/grade_check.py --demo

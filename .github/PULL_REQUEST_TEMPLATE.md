@@ -12,8 +12,8 @@
 
 ## Verification
 <!-- For math/figure changes, paste the relevant proof that it's correct. -->
-- [ ] `python skills/math-verification/scripts/verify.py --demo` still passes
-- [ ] `python skills/geometry-figures/scripts/geo_verify.py --demo` still passes
+- [ ] `python -m pytest -q tests/` passes (the gate)
+- [ ] For new math/units: added/updated a fixture or assertion in `tests/`
 - [ ] Sample prompt + before/after output included below
 
 ```
@@ -23,4 +23,4 @@
 ## Checklist
 - [ ] Skill descriptions stay specific + include follow-up phrasing
 - [ ] `SKILL.md` bodies under ~500 lines (depth pushed to references/)
-- [ ] No tools introduced above the stated grade band without a flag
+- [ ] No tools introduced above the stated grade band (run `grade_check.py` on solution + explanation)

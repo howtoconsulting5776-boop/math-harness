@@ -78,19 +78,26 @@ See [docs/quickstart.md](./docs/quickstart.md) for a 5-minute walkthrough.
 
 ## Quality gates
 
-Before trusting a change, run the same checks that the project uses as its baseline:
+The real gate is a regression suite that asserts the verifier **rejects wrong answers**
+(extraneous roots, broken steps, false identities) and that the geometry and grade-level
+checks behave — so "no wrong solution reaches a student" is enforced by code, not hope:
+
+```bash
+python -m pytest -q tests/      # or, with no extra deps: python tests/run_tests.py
+```
+
+The bundled tools also each ship a `--demo`:
 
 ```bash
 python skills/math-verification/scripts/verify.py --demo
 python skills/geometry-figures/scripts/geo_verify.py --demo
-python skills/geometry-figures/scripts/svg_figure.py --demo fig_new.svg
+python skills/geometry-figures/scripts/svg_figure.py --demo fig.svg
 python skills/problem-bank/scripts/bank.py --demo
+python skills/math-solving/scripts/grade_check.py --demo   # grade-appropriateness linter
 ```
 
-These checks cover symbolic equivalence, equation solution sets, geometry measurements,
-SVG generation, and problem-bank deduplication. See
-[Quality Gates](./docs/quality_gates_new.md) for what each check proves and what it does
-not prove.
+See [Quality Gates](./docs/quality-gates.md) for what each check proves and what it does
+not prove. CI runs the suite on every push ([smoke workflow](./.github/workflows/smoke.yml)).
 
 ## Use
 
@@ -110,10 +117,11 @@ claude "이 학습지 10문제 풀이랑 채점해줘"               # whole wor
 - `skills/geometry-figures/scripts/svg_figure.py` — dependency-free SVG figure builder (triangles, circles, polygons, coordinate planes, function graphs, angle/right-angle/equal-side marks); exports student-ready PNG via `svglib` (`save_both`).
 - `skills/geometry-figures/scripts/geo_verify.py` — `sympy.geometry` figure solver (length, angle, area, parallel/perpendicular, similarity/congruence).
 - `skills/problem-bank/scripts/bank.py` — save solved problems as frontmattered notes (filed by grade/unit, deduplicated) and rebuild a Dataview-friendly `INDEX.md`.
+- `skills/math-solving/scripts/grade_check.py` — grade-appropriateness linter; flags above-grade notation in a solution/explanation for a given grade.
 
 ## Roadmap
 
-Near-term development is tracked in [ROADMAP_new.md](./ROADMAP_new.md). The priorities are
+Near-term development is tracked in [ROADMAP.md](./ROADMAP.md). The priorities are
 teacher-facing trust signals, richer Korean curriculum coverage, stronger geometry QA,
 and small reproducible demos that make regressions easy to catch.
 

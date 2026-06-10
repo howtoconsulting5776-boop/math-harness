@@ -33,11 +33,11 @@ The team mode powers the generate → verify → explain loop. Without it, the h
 ```bash
 python skills/math-verification/scripts/verify.py --demo
 python skills/geometry-figures/scripts/geo_verify.py --demo
-python skills/geometry-figures/scripts/svg_figure.py --demo fig_new.svg
+python skills/geometry-figures/scripts/svg_figure.py --demo fig.svg
 python skills/problem-bank/scripts/bank.py --demo
 ```
 
-You should see PASS/FAIL demo lines from the verifier, a 3-4-5 triangle's measurements from the geo solver, a `fig_new.svg` written to disk, and a problem-bank demo that refuses a duplicate note. If `sympy` is missing, `pip install sympy`.
+You should see PASS/FAIL demo lines from the verifier, a 3-4-5 triangle's measurements from the geo solver, a `fig.svg` written to disk, and a problem-bank demo that refuses a duplicate note. If `sympy` is missing, `pip install sympy`.
 
 ## Step 4 — Solve your first problem (2 min)
 
@@ -72,5 +72,5 @@ Open an issue with your prompt, grade level, and `claude --version` if something
 
 ## Next
 
-- Read [Quality Gates](./quality_gates_new.md) before changing solver, verifier, geometry, or problem-bank behavior.
-- Read [Roadmap](../ROADMAP_new.md) to pick a focused improvement area.
+- Read [Quality Gates](./quality-gates.md) before changing solver, verifier, geometry, or problem-bank behavior.
+- Read [Roadmap](../ROADMAP.md) to pick a focused improvement area.

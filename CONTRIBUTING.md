@@ -22,14 +22,19 @@ docs/             quickstart and guides
 ## Development setup
 
 1. Clone the repo.
-2. `pip install sympy svglib` (SymPy required; svglib only to rasterize figures to PNG).
-3. Smoke-test the bundled scripts:
+2. `pip install sympy pytest svglib` (SymPy required; pytest for the suite; svglib only to rasterize figures to PNG).
+3. Run the regression suite (the real gate — must pass):
+   ```bash
+   python -m pytest -q tests/      # or, dependency-light: python tests/run_tests.py
+   ```
+4. Smoke the bundled scripts (illustrative `--demo`s):
    ```bash
    python skills/math-verification/scripts/verify.py --demo
    python skills/geometry-figures/scripts/geo_verify.py --demo
    python skills/geometry-figures/scripts/svg_figure.py --demo /tmp/fig.svg
+   python skills/math-solving/scripts/grade_check.py --demo
    ```
-4. Load locally: `claude plugin marketplace add ./` then `claude plugin install math-harness@math-harness-marketplace`.
+5. Load locally: `claude plugin marketplace add ./` then `claude plugin install math-harness@math-harness-marketplace`.
 
 ## Conventions
 

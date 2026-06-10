@@ -78,18 +78,26 @@ pip install sympy svglib
 
 ## 품질 게이트
 
-변경을 믿기 전에 아래 기준 스모크 테스트를 실행한다.
+진짜 게이트는 **검산기가 오답을 거부하는지**(외래근·거짓 단계·틀린 항등)와 도형·학년
+점검이 정상인지 단언하는 회귀 테스트다 — "틀린 풀이가 학생에게 가지 않는다"를 바람이
+아니라 코드로 강제한다:
+
+```bash
+python -m pytest -q tests/      # 또는 의존성 없이: python tests/run_tests.py
+```
+
+번들 도구는 각각 `--demo`도 제공한다:
 
 ```bash
 python skills/math-verification/scripts/verify.py --demo
 python skills/geometry-figures/scripts/geo_verify.py --demo
-python skills/geometry-figures/scripts/svg_figure.py --demo fig_new.svg
+python skills/geometry-figures/scripts/svg_figure.py --demo fig.svg
 python skills/problem-bank/scripts/bank.py --demo
+python skills/math-solving/scripts/grade_check.py --demo   # 학년 적합성 린터
 ```
 
-이 검사는 식 등가성, 방정식 해집합, 도형 측정, SVG 생성, 문제은행 중복 방지를
-확인한다. 각 검사가 보장하는 것과 보장하지 않는 것은
-[품질 게이트](./docs/quality_gates_new.md)에 정리했다.
+각 검사가 보장하는 것과 보장하지 않는 것은 [품질 게이트](./docs/quality-gates.md)에
+정리했다. CI는 푸시마다 이 스위트를 돌린다([smoke 워크플로](./.github/workflows/smoke.yml)).
 
 ## 사용
 
@@ -109,10 +117,11 @@ claude "이 학습지 10문제 풀이랑 채점해줘"
 - `skills/geometry-figures/scripts/svg_figure.py` — 의존성 없는 SVG 작도기(삼각형·원·다각형·좌표평면·함수그래프·각/직각/등변 표시); `svglib`로 학생 배포용 PNG 변환(`save_both`).
 - `skills/geometry-figures/scripts/geo_verify.py` — `sympy.geometry` 도형 풀이(길이·각·넓이·평행/수직·닮음/합동).
 - `skills/problem-bank/scripts/bank.py` — 푼 문제를 frontmatter 노트로 저장(학년/단원 분류·중복 방지)하고 Dataview용 `INDEX.md` 재생성.
+- `skills/math-solving/scripts/grade_check.py` — 학년 적합성 린터; 풀이/설명에 학년 초과 기호가 섞였는지 잡는다.
 
 ## 로드맵
 
-가까운 개발 방향은 [ROADMAP_new.md](./ROADMAP_new.md)에 정리했다. 우선순위는
+가까운 개발 방향은 [ROADMAP.md](./ROADMAP.md)에 정리했다. 우선순위는
 교사용 신뢰 신호, 한국 교육과정 커버리지 보강, 도형 QA 강화, 회귀를 빨리 잡는
 작은 재현 데모다.
 

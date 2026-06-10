@@ -71,3 +71,5 @@ description: "초중고 수학 문제를 학년 수준에 맞춰 단계별로 �
 ```
 
 > 교육과정 단원 매핑·도구 해금 시점은 `references/curriculum-map.md`, 학원 진도·스타일은 `references/academy-profile.md`를 읽는다.
+
+**학년 자기점검:** 풀이를 넘기기 전 `scripts/grade_check.py`의 `check(grade, 풀이텍스트)`로 학년 초과 도구가 없는지 확인한다(verifier도 같은 검사를 한다). 걸리면 학년 내 도구로 다시 쓴다.
