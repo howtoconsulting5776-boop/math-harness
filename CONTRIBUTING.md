@@ -22,7 +22,7 @@ docs/             quickstart and guides
 ## Development setup
 
 1. Clone the repo.
-2. `pip install sympy matplotlib` (SymPy required; matplotlib only for PNG graphs).
+2. `pip install sympy svglib` (SymPy required; svglib only to rasterize figures to PNG).
 3. Smoke-test the bundled scripts:
    ```bash
    python skills/math-verification/scripts/verify.py --demo
@@ -37,7 +37,7 @@ docs/             quickstart and guides
 - **Explain the *why* in skill bodies**, not just rules — the model generalizes better from reasons. Keep each `SKILL.md` under ~500 lines; push depth into `references/`.
 - **Correctness first.** Any claim a solution makes must be reproducible by `math-verifier` in SymPy. If you add math content, add or update a verification path.
 - **Grade appropriateness.** Don't introduce tools above the stated grade band without flagging them.
-- Scripts use only the standard library + `sympy`/`matplotlib`. SVG generation must stay dependency-free.
+- Scripts use only the standard library + `sympy` (and `svglib` for optional PNG export). SVG generation itself must stay dependency-free.
 
 ## Pull requests
 

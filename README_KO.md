@@ -42,8 +42,10 @@ solver(풀이) ──► verifier(독립 재유도)
 - **풀이** — 단일 문제(텍스트/사진)를 학년 도구로 단계별 풀이.
 - **개념 설명** — 초/중/고 수준 비유·발문으로 개념 자체를 설명.
 - **오답 분석** — 오개념을 짚고, 학생 사고에 공감하며 교정 처방.
-- **도형** — 그림 작도, 목표 개념 중심 출제, 두 갈래 풀이(교육용 합성 + 검산용 좌표).
+- **도형** — 그림 작도(배포용 PNG + 벡터 SVG), 목표 개념 중심 출제, 두 갈래 풀이(교육용 합성 + 검산용 좌표).
 - **학습지** — 문제 세트를 병렬로 풀고 채점해 해설지로 취합.
+- **문제은행** — 푼 문제·오답을 구조화 마크다운으로 누적(학년/단원 분류, 중복 방지, Obsidian/Dataview 검색).
+- **학원 맞춤** — `academy-profile.md`로 학원 실제 진도·스타일에 학년/도구 제한을 맞춤.
 
 ## 설치
 
@@ -53,10 +55,10 @@ claude plugin install math-harness@math-harness-marketplace
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1   # 팀 모드
 ```
 
-**요구사항:** Claude Code v2.x+, Python 3 + `sympy`(필수)·`matplotlib`(선택, PNG 그래프용). SVG 그림은 추가 패키지 불필요.
+**요구사항:** Claude Code v2.x+, Python 3 + `sympy`(필수)·`svglib`(선택 — 도형을 학생 배포용 PNG로 변환할 때만). SVG 그림은 추가 패키지 불필요.
 
 ```bash
-pip install sympy matplotlib
+pip install sympy svglib
 ```
 
 5분 안내는 [docs/quickstart.md](./docs/quickstart.md).
@@ -76,8 +78,9 @@ claude "이 학습지 10문제 풀이랑 채점해줘"
 ## 번들 도구
 
 - `skills/math-verification/scripts/verify.py` — SymPy 검산 헬퍼(`assert_equal`, `check_solutions`, `sample_identity`, `check_steps`). `python … verify.py --demo`.
-- `skills/geometry-figures/scripts/svg_figure.py` — 의존성 없는 SVG 작도기(삼각형·원·다각형·좌표평면·함수그래프·각/직각/등변 표시).
+- `skills/geometry-figures/scripts/svg_figure.py` — 의존성 없는 SVG 작도기(삼각형·원·다각형·좌표평면·함수그래프·각/직각/등변 표시); `svglib`로 학생 배포용 PNG 변환(`save_both`).
 - `skills/geometry-figures/scripts/geo_verify.py` — `sympy.geometry` 도형 풀이(길이·각·넓이·평행/수직·닮음/합동).
+- `skills/problem-bank/scripts/bank.py` — 푼 문제를 frontmatter 노트로 저장(학년/단원 분류·중복 방지)하고 Dataview용 `INDEX.md` 재생성.
 
 ## 라이선스
 

@@ -42,8 +42,10 @@ solver (solution) ──► verifier (independent re-derivation)
 - **Solve** a single problem (text or photo) with grade-checked, step-by-step reasoning.
 - **Explain** any concept at elementary / middle / high-school level, with analogies and scaffolding questions.
 - **Diagnose wrong answers** — name the misconception, empathize with the student's reasoning, and prescribe a fix.
-- **Geometry** — draw a figure, author a new problem around a target concept, or solve a figure two ways (synthetic for teaching, coordinates for verification).
+- **Geometry** — draw a figure (PNG handout + SVG source), author a new problem around a target concept, or solve a figure two ways (synthetic for teaching, coordinates for verification).
 - **Worksheets** — solve and grade a whole problem set in parallel, then compile a solution sheet.
+- **Problem bank** — accumulate solved problems and wrong-answer notes as structured, searchable Markdown (filed by grade/unit, deduplicated, Obsidian/Dataview-ready).
+- **Academy-aware** — tailor grade/tool restrictions to your academy's actual progress and style via `academy-profile.md`.
 
 ## Install
 
@@ -53,10 +55,10 @@ claude plugin install math-harness@math-harness-marketplace
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1   # team mode
 ```
 
-**Requirements:** Claude Code v2.x+, Python 3 with `sympy` (required) and `matplotlib` (optional, only for PNG graphs). SVG figures need no extra packages.
+**Requirements:** Claude Code v2.x+, Python 3 with `sympy` (required) and `svglib` (optional — only to rasterize figures to PNG handouts). SVG figures need no extra packages.
 
 ```bash
-pip install sympy matplotlib
+pip install sympy svglib
 ```
 
 See [docs/quickstart.md](./docs/quickstart.md) for a 5-minute walkthrough.
@@ -76,8 +78,9 @@ claude "이 학습지 10문제 풀이랑 채점해줘"               # whole wor
 ## Bundled tools
 
 - `skills/math-verification/scripts/verify.py` — SymPy verification helpers (`assert_equal`, `check_solutions`, `sample_identity`, `check_steps`). Run `python … verify.py --demo`.
-- `skills/geometry-figures/scripts/svg_figure.py` — dependency-free SVG figure builder (triangles, circles, polygons, coordinate planes, function graphs, angle/right-angle/equal-side marks).
+- `skills/geometry-figures/scripts/svg_figure.py` — dependency-free SVG figure builder (triangles, circles, polygons, coordinate planes, function graphs, angle/right-angle/equal-side marks); exports student-ready PNG via `svglib` (`save_both`).
 - `skills/geometry-figures/scripts/geo_verify.py` — `sympy.geometry` figure solver (length, angle, area, parallel/perpendicular, similarity/congruence).
+- `skills/problem-bank/scripts/bank.py` — save solved problems as frontmattered notes (filed by grade/unit, deduplicated) and rebuild a Dataview-friendly `INDEX.md`.
 
 ## License
 

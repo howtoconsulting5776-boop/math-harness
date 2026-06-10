@@ -15,7 +15,7 @@ description: "도형(기하) 문제를 그리고·출제하고·푸는 규약. �
 5. **검산 연계:** 좌표 계산 결과를 math-verifier에 넘겨 독립 재계산을 받는다.
 
 ## 그리기 — svg_figure.py
-순수 표준 라이브러리(외부 패키지 불필요). 수학 좌표(y 위로 증가)로 입력하면 내부에서 SVG로 변환한다.
+작도 자체는 순수 표준 라이브러리(외부 패키지 불필요). 수학 좌표(y 위로 증가)로 입력하면 내부에서 SVG로 변환한다.
 ```python
 import sys; sys.path.insert(0, "skills/geometry-figures/scripts")
 from svg_figure import Figure
@@ -26,9 +26,16 @@ fig.right_angle((0,0),(4,0),(0,3))     # A의 직각 기호
 fig.tick((0,0),(0,3), n=1)             # 등변 눈금(같은 n=같은 길이)
 fig.seg_label((0,0),(4,0),"4")         # 변 길이 라벨
 fig.angle_arc((4,0),(0,0),(0,3), text="θ")
-fig.save("_workspace/fig.svg")
+svg_path, png_path = fig.save_both("_workspace/fig")   # 벡터 원본 + 배포용 PNG
 ```
 주요 메서드: `grid/axes/segment/polygon/circle/point/label/seg_label/right_angle/angle_arc/tick/func`. 함수 그래프는 `fig.func(lambda x: x**2)`.
+
+### 출력 형식 — PNG 기본(학생 배포용) + SVG 원본
+학생에게 바로 나눠 줄 그림은 **PNG가 기본**이다(메신저·한글파일·인쇄에 붙이기 쉽다). 동시에 **SVG 벡터 원본**도 남겨, 확대·재편집·재출력에 대비한다.
+- `fig.save("path.png")` → 확장자로 자동 분기, PNG로 래스터화(기본 2배 해상도, `scale=` 조절).
+- `fig.save("path.svg")` → 벡터 SVG.
+- `fig.save_both("stem")` → `stem.svg` + `stem.png` 둘 다(권장). svglib가 없으면 PNG는 건너뛰고 `(svg, None)` 반환.
+- PNG 변환은 `svglib`(순수 파이썬, `pip install svglib`)를 쓴다. **없으면 SVG로 폴백** — SVG는 의존성 0이라 항상 된다.
 
 > 도형 유형별 작도 레시피(이등변·정다각형·원과 접선·좌표기하·함수)는 `references/svg-recipes.md` 참조.
 
@@ -65,7 +72,7 @@ are_similar(((0,0),(4,0),(0,3)), ((0,0),(8,0),(0,6)))  # (True, 1/2) → 넓이�
 ## 출력 형식
 ```
 ## 문제 (출제 시)
-[문제문]  + 그림: _workspace/<id>_figure.svg
+[문제문]  + 그림: _workspace/<id>_figure.png (+ .svg 원본)
 ## 좌표 배치
 A(0,0) B(4,0) C(0,3) ...  (배치 근거)
 ## 풀이
@@ -76,5 +83,5 @@ A(0,0) B(4,0) C(0,3) ...  (배치 근거)
 ```
 
 ## 폴백
-- matplotlib 미설치라도 SVG는 의존성이 없어 항상 가능 → SVG로 그린다. png가 꼭 필요할 때만 setup 블로커 보고.
+- **PNG 변환기(svglib) 미설치:** `save_both`/`save("*.png")`가 SVG로 폴백한다(작도 자체는 의존성 0). 학생 배포용 PNG가 필요하면 `pip install svglib` 안내 — 단, 벡터 SVG만으로도 인쇄·확대는 더 깨끗하다.
 - 불가능한 도형(삼각부등식 위반, 모순 조건)은 그리기 전에 보고하고 확인 요청.

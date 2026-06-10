@@ -206,10 +206,48 @@ class Figure:
                 f'  <rect width="{self.w}" height="{self.h}" fill="white"/>\n'
                 f'  {body}\n</svg>\n')
 
-    def save(self, path):
+    def save_svg(self, path):
         with open(path, "w", encoding="utf-8") as f:
             f.write(self.svg())
         return path
+
+    def save_png(self, path, scale=2.0):
+        """SVG를 PNG로 래스터화(학생 배포용). svglib+reportlab 사용.
+
+        scale=2.0이면 2배 해상도(또렷한 인쇄·캡처). 변환기가 없으면 명확한
+        에러를 던지니, 호출측에서 SVG 폴백을 결정한다.
+        """
+        try:
+            import io as _io
+            from svglib.svglib import svg2rlg
+            from reportlab.graphics import renderPM
+        except Exception as e:  # pragma: no cover
+            raise RuntimeError(
+                "PNG 변환에는 svglib가 필요합니다: pip install svglib "
+                "(없으면 .svg로 저장하세요 — 벡터라 인쇄·확대에 더 강함)"
+            ) from e
+        drawing = svg2rlg(_io.StringIO(self.svg()))
+        if scale and scale != 1.0:
+            drawing.width *= scale
+            drawing.height *= scale
+            drawing.scale(scale, scale)
+        renderPM.drawToFile(drawing, path, fmt="PNG", bg=0xFFFFFF)
+        return path
+
+    def save(self, path, scale=2.0):
+        """확장자로 형식 분기. .png면 래스터화, 그 외엔 SVG."""
+        if str(path).lower().endswith(".png"):
+            return self.save_png(path, scale=scale)
+        return self.save_svg(path)
+
+    def save_both(self, stem, scale=2.0):
+        """벡터 원본(.svg)과 배포용(.png)을 함께 저장. 반환: (svg_path, png_path|None)."""
+        svg_path = self.save_svg(stem + ".svg")
+        try:
+            png_path = self.save_png(stem + ".png", scale=scale)
+        except RuntimeError:
+            png_path = None
+        return svg_path, png_path
 
 
 def _unit(a, b):
@@ -228,8 +266,8 @@ def _demo(path):
     fig.seg_label((0, 0), (0, 3), "3", offset=-18)
     fig.seg_label((4, 0), (0, 3), "5")
     fig.angle_arc((4, 0), (0, 0), (0, 3), text="θ")
-    fig.save(path)
-    print(f"saved {path}")
+    saved = fig.save(path)
+    print(f"saved {saved}")
 
 
 if __name__ == "__main__":

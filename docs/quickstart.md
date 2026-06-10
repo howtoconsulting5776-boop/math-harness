@@ -4,7 +4,7 @@
 
 **Prerequisites:**
 - Claude Code **v2.x+** (`claude --version`)
-- **Python 3** with SymPy: `pip install sympy` (and `matplotlib` if you want PNG graphs)
+- **Python 3** with SymPy: `pip install sympy` (and `svglib` if you want figures rasterized to PNG handouts)
 - Network access to `github.com`
 
 ---
@@ -65,6 +65,6 @@ Hand Claude a photo of a textbook problem (drag the image in, or pass its path).
 | Team doesn't form / only one agent answers | `export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in the *current* shell, re-run. |
 | "verification skipped — sympy not found" | `pip install sympy`. Verifier falls back to hand re-derivation, but SymPy is strongly recommended. |
 | Skill didn't trigger | Be explicit: include "풀어줘 / 설명해줘 / 그려줘 / 채점". Pure facts ("2의 제곱은?") are answered directly without the harness. |
-| PNG graph fails | `pip install matplotlib`. SVG figures need no extra packages and always work. |
+| PNG export fails | `pip install svglib`. Figures fall back to SVG, which needs no extra packages and prints/scales even cleaner. |
 
 Open an issue with your prompt, grade level, and `claude --version` if something this guide didn't cover bites you.
