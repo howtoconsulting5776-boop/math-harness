@@ -10,7 +10,7 @@
       "name": "math-harness",
       "source": "./",
       "description": "초중고 수학 교육 특화 하네스 — 문제를 풀고(solver), sympy로 검산하고(verifier), 학생 눈높이로 설명하고(explainer), 도형을 PNG/SVG로 그리고·출제하고·푸는(geometer) 에이전트 팀 + 문제은행·오답노트 누적(problem-bank) 스킬 세트.",
-      "version": "0.2.0"
+      "version": "0.2.1"
     }
   ]
 }

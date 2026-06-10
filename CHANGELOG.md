@@ -3,6 +3,15 @@
 All notable changes to **math-harness** are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow [SemVer](https://semver.org/).
 
+## [0.2.1] — 2026-06-10
+
+### Added
+- **Signature 4-step solution frame** (하우투수학): every solution is now structured as
+  `1) 구하는 것 → 2) 주어진 것 → 3) 주어진 것을 이용하기 → 4) 배운 것과 연결하기` — a
+  transferable problem-solving habit (Polya-style), not just an answer. Baked into
+  `math-solving` output, the `math-explanation` scaffolding, the problem-bank note
+  template, and filled into `academy-profile.md`. Overridable per-academy via the profile.
+
 ## [0.2.0] — 2026-06-10
 
 ### Added
