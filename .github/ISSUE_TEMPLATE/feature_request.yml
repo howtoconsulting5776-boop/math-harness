@@ -1,0 +1,21 @@
+name: Feature request
+description: Suggest a new skill, agent, curriculum coverage, or capability
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's missing or hard today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: New skill/agent? Curriculum unit? Figure recipe? Misconception entry?
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example prompt it should handle

@@ -1,0 +1,28 @@
+{
+  "name": "math-harness",
+  "description": "An agent-team harness for K-12 math education in Claude Code. Turns a math problem (text or photo) into a grade-appropriate, step-by-step solution that is independently verified with SymPy, explained at the student's level, and — for geometry — drawn, authored, and solved as SVG/coordinate figures. 초중고 수학 문제를 학년 수준에 맞춰 단계별로 풀고, SymPy로 검산하고, 눈높이로 설명하며, 도형은 그리고·출제하고·푸는 에이전트 팀 하네스.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Jang Eui Woong",
+    "url": "https://github.com/YOUR_GITHUB_USERNAME"
+  },
+  "homepage": "https://github.com/YOUR_GITHUB_USERNAME/math-harness",
+  "repository": "https://github.com/YOUR_GITHUB_USERNAME/math-harness",
+  "license": "Apache-2.0",
+  "keywords": [
+    "math",
+    "math-education",
+    "k12",
+    "tutoring",
+    "problem-solving",
+    "sympy",
+    "geometry",
+    "svg",
+    "agent-team",
+    "claude-code",
+    "claude-code-plugin",
+    "multi-agent",
+    "producer-reviewer",
+    "korea-curriculum"
+  ]
+}

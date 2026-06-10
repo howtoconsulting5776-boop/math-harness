@@ -1,0 +1,16 @@
+{
+  "name": "math-harness-marketplace",
+  "owner": {
+    "name": "Jang Eui Woong",
+    "email": "howtoconsulting5776@gmail.com",
+    "url": "https://github.com/YOUR_GITHUB_USERNAME"
+  },
+  "plugins": [
+    {
+      "name": "math-harness",
+      "source": "./",
+      "description": "초중고 수학 교육 특화 하네스 — 문제를 풀고(solver), sympy로 검산하고(verifier), 학생 눈높이로 설명하고(explainer), 도형을 그리고·출제하고·푸는(geometer) 에이전트 팀과 스킬 세트.",
+      "version": "0.1.0"
+    }
+  ]
+}

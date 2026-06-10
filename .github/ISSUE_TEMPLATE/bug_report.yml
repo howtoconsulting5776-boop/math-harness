@@ -1,0 +1,40 @@
+name: Bug report
+description: A wrong solution, failed verification, broken figure, or mis-triggered skill
+labels: ["bug", "needs-triage"]
+body:
+  - type: textarea
+    id: prompt
+    attributes:
+      label: The exact prompt
+      description: Copy the message you sent (in any language).
+      placeholder: "중2 수준으로: 3(x-2)=x+4 풀어줘"
+    validations:
+      required: true
+  - type: input
+    id: grade
+    attributes:
+      label: Grade level / unit
+      placeholder: "중2 · 일차방정식"
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected vs. what happened
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part?
+      options:
+        - Solving (wrong/incomplete solution)
+        - Verification (passed something wrong / failed something right)
+        - Explanation (too hard / too easy / unclear)
+        - Geometry figure (wrong drawing or coordinates)
+        - Triggering (wrong skill fired or none did)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Claude Code version
+      placeholder: "claude --version"
