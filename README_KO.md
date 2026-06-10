@@ -12,6 +12,19 @@
 
 ---
 
+## 현재 상태
+
+`math-harness`는 독립 웹앱이 아니라 Claude Code 플러그인 패키지다. 따라서 GitHub
+첫 화면 자체가 제품 소개면이다. 1분 안에 “무엇을 해 주는지, 어떻게 설치하는지,
+어디까지 검증되는지”가 보여야 한다.
+
+**이번 개선 방향**
+
+- 에이전트 팀을 모르는 사람도 생성 → 검산 → 설명 흐름을 바로 이해하게 만든다.
+- 번들 도구를 깨끗한 Python 환경에서도 스모크 테스트할 수 있게 유지한다.
+- “검증됨”이 무엇을 뜻하고 무엇을 뜻하지 않는지 문서화해 과신을 줄인다.
+- 다음 발전 과제를 로드맵으로 드러내 기여자가 바로 붙을 수 있게 한다.
+
 ## 왜 만들었나
 
 LLM은 수학 설명은 유창하지만 계산·대수에서 조용히 실수하고, 학생 *눈높이*보다 자기 수준으로 설명하는 경향이 있다. `math-harness`는 **생성 → 검산 → 설명** 팀으로 둘 다 잡는다.
@@ -63,6 +76,21 @@ pip install sympy svglib
 
 5분 안내는 [docs/quickstart.md](./docs/quickstart.md).
 
+## 품질 게이트
+
+변경을 믿기 전에 아래 기준 스모크 테스트를 실행한다.
+
+```bash
+python skills/math-verification/scripts/verify.py --demo
+python skills/geometry-figures/scripts/geo_verify.py --demo
+python skills/geometry-figures/scripts/svg_figure.py --demo fig_new.svg
+python skills/problem-bank/scripts/bank.py --demo
+```
+
+이 검사는 식 등가성, 방정식 해집합, 도형 측정, SVG 생성, 문제은행 중복 방지를
+확인한다. 각 검사가 보장하는 것과 보장하지 않는 것은
+[품질 게이트](./docs/quality_gates_new.md)에 정리했다.
+
 ## 사용
 
 영어든 한국어든 그냥 요청하면 된다:
@@ -81,6 +109,12 @@ claude "이 학습지 10문제 풀이랑 채점해줘"
 - `skills/geometry-figures/scripts/svg_figure.py` — 의존성 없는 SVG 작도기(삼각형·원·다각형·좌표평면·함수그래프·각/직각/등변 표시); `svglib`로 학생 배포용 PNG 변환(`save_both`).
 - `skills/geometry-figures/scripts/geo_verify.py` — `sympy.geometry` 도형 풀이(길이·각·넓이·평행/수직·닮음/합동).
 - `skills/problem-bank/scripts/bank.py` — 푼 문제를 frontmatter 노트로 저장(학년/단원 분류·중복 방지)하고 Dataview용 `INDEX.md` 재생성.
+
+## 로드맵
+
+가까운 개발 방향은 [ROADMAP_new.md](./ROADMAP_new.md)에 정리했다. 우선순위는
+교사용 신뢰 신호, 한국 교육과정 커버리지 보강, 도형 QA 강화, 회귀를 빨리 잡는
+작은 재현 데모다.
 
 ## 라이선스
 

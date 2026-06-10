@@ -12,6 +12,19 @@ Turn a math problem — typed or photographed — into a grade-appropriate, step
 
 ---
 
+## Status
+
+`math-harness` is currently a Claude Code plugin package, not a standalone web app. The
+GitHub page is the product surface: it should make the plugin's promise, install path,
+and quality checks obvious in under a minute.
+
+**Current improvement focus**
+
+- Make the first screen explain the generate → verify → explain loop without requiring prior agent-team knowledge.
+- Keep every bundled helper smoke-testable from a clean Python environment.
+- Document what "verified" means so teachers can trust the output without over-trusting the model.
+- Make future work visible through a short roadmap instead of leaving improvement ideas in issue threads.
+
 ## Why
 
 LLMs are fluent at math prose but quietly make arithmetic and algebra slips, and they tend to explain *at* a student rather than *for* one. `math-harness` fixes both with a **generate → verify → explain** team:
@@ -63,6 +76,22 @@ pip install sympy svglib
 
 See [docs/quickstart.md](./docs/quickstart.md) for a 5-minute walkthrough.
 
+## Quality gates
+
+Before trusting a change, run the same checks that the project uses as its baseline:
+
+```bash
+python skills/math-verification/scripts/verify.py --demo
+python skills/geometry-figures/scripts/geo_verify.py --demo
+python skills/geometry-figures/scripts/svg_figure.py --demo fig_new.svg
+python skills/problem-bank/scripts/bank.py --demo
+```
+
+These checks cover symbolic equivalence, equation solution sets, geometry measurements,
+SVG generation, and problem-bank deduplication. See
+[Quality Gates](./docs/quality_gates_new.md) for what each check proves and what it does
+not prove.
+
 ## Use
 
 Just ask, in English or Korean:
@@ -81,6 +110,12 @@ claude "이 학습지 10문제 풀이랑 채점해줘"               # whole wor
 - `skills/geometry-figures/scripts/svg_figure.py` — dependency-free SVG figure builder (triangles, circles, polygons, coordinate planes, function graphs, angle/right-angle/equal-side marks); exports student-ready PNG via `svglib` (`save_both`).
 - `skills/geometry-figures/scripts/geo_verify.py` — `sympy.geometry` figure solver (length, angle, area, parallel/perpendicular, similarity/congruence).
 - `skills/problem-bank/scripts/bank.py` — save solved problems as frontmattered notes (filed by grade/unit, deduplicated) and rebuild a Dataview-friendly `INDEX.md`.
+
+## Roadmap
+
+Near-term development is tracked in [ROADMAP_new.md](./ROADMAP_new.md). The priorities are
+teacher-facing trust signals, richer Korean curriculum coverage, stronger geometry QA,
+and small reproducible demos that make regressions easy to catch.
 
 ## License
 
