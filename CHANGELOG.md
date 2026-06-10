@@ -3,6 +3,37 @@
 All notable changes to **math-harness** are documented here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); versions follow [SemVer](https://semver.org/).
 
+## [0.4.0] — 2026-06-10
+
+검산 커버리지의 구멍을 메우고, 교육과정 해금 표를 단일 소스로 만든 안전성 릴리스.
+
+### 검산 (math-verification)
+- **신규 `check_inequality`** — 부등식 해집합 직접 대조. 간판 시나리오(-2x<6 부등호 방향 오개념)가 기계 검산 가능해짐.
+- **신규 `check_equation_steps`** — 방정식 풀이 체인의 동치 변형 검증. 외래근 도입(양변 제곱)·해 누락(0일 수 있는 식으로 나눔)을 단계 위치·원인까지 보고.
+- **vacuous PASS 버그 수정** — `sample_identity`에서 평가된 표본이 0개(전부 예외/NaN/무한대)면 PASS가 아니라 UNDECIDED.
+- **삼진 판정** — `assert_equal`이 simplify 실패 시 `equals()` 폴백(거짓 FAIL로 인한 불필요 재풀이 방지), 둘 다 실패하면 UNDECIDED.
+- 모든 판정 메시지에 검증 방법 라벨([기호검증]/[해집합]/[수치표본]/[동치변형]) 표기 — `METHODS` 상수 공개.
+
+### 학년 린터 (grade_check)
+- **단일 소스화** — 해금 시점을 `references/curriculum-unlocks.json`에서 읽음(curriculum-map.md와 1:1, JSON 부재 시 내장 폴백).
+- **학기 정밀 판정** — '중3-1', '중2 2학기' 파싱(`parse_grade_semester`). 학년만 주어지면 수료 기준으로 관대 판정(기존 동작 보존).
+- **거짓음성 수정** — 한글 삼각비 표기(코사인·탄젠트·사인), 한글 인접 음수('-3도'), 무공백 'sin30°', 고1의 미적분·로그·삼각함수.
+- **오탐 방지** — 로그인/로그아웃/블로그/카탈로그, 3-4-5 하이픈.
+
+### 문제은행 (problem-bank)
+- **정규화 해시** — NFKC + 수학기호 이형(−×÷≤≥ 등) 통일 후 해시. 유니코드 마이너스로 적은 같은 문제가 중복으로 잡힘.
+- **구조 해시 + `find_similar`** — 숫자를 추상화한 structure_hash로 '숫자만 바꾼 변형' 군집 탐지(조사 변화 포함). 복습 추천·중복 출제 방지용.
+- **`verify_method` 프런트매터** — 검증 '수준'(기호검증/해집합/수치표본/동치변형/좌표기하/미검증)을 노트와 INDEX에 기록 — '검증됨'의 의미를 교사가 구분 가능.
+
+### 검산 독립성 (agents/skills)
+- verifier에 **2단계 블라인드 프로토콜** 명문화 — solver 풀이를 읽기 전 독립 유도를 `blind.md`로 먼저 기록, 오케스트레이터가 태스크 의존성으로 순서 강제(앵커링의 구조적 차단).
+
+### 도형 (geometry-figures)
+- `are_similar` 변 정렬을 배정밀도 float → 50자리 고정밀로 — 무리수 변 길이의 오정렬로 인한 닮음 오판 방지.
+
+### 테스트
+- 신규 회귀 21건(`tests/test_patches.py`) — 위 허점들이 되살아나면 빨간불. 총 51건.
+
 ## [0.3.0] — 2026-06-10
 
 ### Added — correctness & grade-fit enforced by code (review of Codex's docs PR)

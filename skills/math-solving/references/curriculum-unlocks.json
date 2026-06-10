@@ -1,0 +1,36 @@
+{
+  "_doc": "한국 2022 개정 교육과정 — 도구 해금 시점의 기계 판독용 단일 소스. curriculum-map.md의 '도구 해금 시점' 표와 1:1로 유지할 것. grade_check.py가 이 파일을 읽어 학년 초과 도구를 판정한다(문서와 코드의 불일치 방지). stage_order: 초1~6=1~6, 중N-S학기=10+(N-1)*2+S, 고N=20+N, 대학=99.",
+  "stages": {
+    "elem-1": 1, "elem-2": 2, "elem-3": 3, "elem-4": 4, "elem-5": 5, "elem-6": 6,
+    "mid-1-1": 11, "mid-1-2": 12, "mid-2-1": 13, "mid-2-2": 14,
+    "mid-3-1": 15, "mid-3-2": 16,
+    "high-1": 21, "high-2": 22, "high-3": 23,
+    "university": 99
+  },
+  "bare_grade_default": {
+    "_doc": "학년만 주어지면(예: '중3') 그 학년 과정을 마친 시점으로 간주한다(린터는 거짓양성을 줄이는 관대한 기본값). 학기까지 주어지면(예: '중3-1', '중3 1학기') 정밀 판정.",
+    "elem": "same-level", "mid": "end-of-grade", "high": "same-level"
+  },
+  "tools": {
+    "neg":        {"unlock": "mid-1-1", "label": "음수",
+                   "reason": "음수(정수와 유리수)는 중1-1학기"},
+    "var_eq":     {"unlock": "mid-1-1", "label": "미지수 문자 방정식",
+                   "reason": "문자 미지수·방정식은 중1-1학기"},
+    "exp_pow":    {"unlock": "mid-1-1", "label": "지수 표기 ^",
+                   "reason": "거듭제곱 표기는 중1(소인수분해)부터"},
+    "sqrt":       {"unlock": "mid-3-1", "label": "근호/제곱근",
+                   "reason": "제곱근·실수는 중3-1학기"},
+    "trig_ratio": {"unlock": "mid-3-2", "label": "삼각비(sin·cos·tan)",
+                   "reason": "삼각비는 중3-2학기"},
+    "trig_func":  {"unlock": "high-2",  "label": "삼각함수",
+                   "reason": "삼각함수(일반각·그래프)는 고2(대수)"},
+    "log":        {"unlock": "high-2",  "label": "로그",
+                   "reason": "지수·로그는 고2(대수)"},
+    "calc":       {"unlock": "high-2",  "label": "미적분/극한",
+                   "reason": "함수의 극한·다항함수 미적분은 고2(미적분Ⅰ)"},
+    "vector":     {"unlock": "high-3",  "label": "벡터",
+                   "reason": "평면벡터·공간도형은 고3/기하"},
+    "quantifier": {"unlock": "university", "label": "형식 논리/ε-δ",
+                   "reason": "대학 수준 형식 표기"}
+  }
+}

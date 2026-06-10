@@ -45,7 +45,7 @@ description: "초중고 수학 교육 하네스의 오케스트레이터. 수학
 
 ### 2A. 팀 모드 (단일/개념/오답/도형)
 1. `TeamCreate`로 팀 구성(필요 에이전트만 — 비도형은 geometer 제외 가능).
-2. `TaskCreate`로 작업·의존성 등록: 풀이 → 검산 → 설명(도형은 작도·좌표 풀이를 선행).
+2. `TaskCreate`로 작업·의존성 등록: 풀이 → 검산 → 설명(도형은 작도·좌표 풀이를 선행). **검산은 2태스크로 분리**: ① verifier 블라인드 독립 유도(입력=문제 조건만, 산출=`_workspace/<id>_verify/blind.md`) — solver와 병렬 가능, ② 대조(입력=blind.md+solver 풀이). 블라인드가 먼저 존재해야 대조가 시작되도록 의존성을 건다(앵커링의 구조적 차단).
 3. 팀원이 `SendMessage`로 자체 조율(검산 FAIL ↔ 풀이 수정 루프, 최대 2회 재시도).
 4. **종료 조건:** verifier PASS. 그 후 explainer가 최종 설명 생성.
 5. 결과 종합 후 `TeamDelete`.
@@ -84,10 +84,10 @@ solver(풀이) → verifier(독립 재계산)
 
 ## 저장 모드 (문제은행·오답노트) — 선택
 사용자가 "저장 / 문제은행 / 오답노트 / 노트로 정리 / 누적 / 복습자료"를 요청하면, 풀이가 **검산 PASS**된 뒤 `problem-bank` 스킬로 노트를 누적 저장한다(단순 1회 풀이엔 저장하지 않는다 — 불필요한 누적 방지).
-1. solver/verifier/explainer 산출을 모아 노트 메타(학년·단원·개념·난이도·정답·`verified`·태그·출처)와 본문 섹션을 구성한다.
+1. solver/verifier/explainer 산출을 모아 노트 메타(학년·단원·개념·난이도·정답·`verified`·`verify_method`(기호검증/해집합/수치표본/동치변형/좌표기하/미검증 — verifier 리포트의 검증 방법)·태그·출처)와 본문 섹션을 구성한다.
 2. `problem-bank`의 `scripts/bank.py` `save_note`로 저장하고, **오늘 날짜를 `meta["created"]`로 전달**(스크립트는 시계를 안 읽음). 도형이면 PNG 경로를 `figure`로.
 3. `rebuild_index`로 INDEX.md를 갱신한다.
-4. 저장 위치는 사용자 지정 경로(예: Obsidian 볼트), 없으면 `problem-bank/` 기본 — 위치를 알린다.
+4. 저장 위치는 사용자 지정 경로(예: Obsidian 볼트), 없으면 `problem-bank/` 기본 — 위치를 알린다. 저장 전 `find_similar`로 같은 구조의 기존 변형을 확인하고, 있으면 사용자에게 알린다(복습 추천·중복 출제 방지).
 5. 오답 분석 결과는 `type: 오답노트`로 저장한다. 미검증 풀이는 `verified:false`로 구분 저장.
 
 ## Phase 3 — 마무리

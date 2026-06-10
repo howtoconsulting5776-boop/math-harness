@@ -113,7 +113,7 @@ claude "이 학습지 10문제 풀이랑 채점해줘"               # whole wor
 
 ## Bundled tools
 
-- `skills/math-verification/scripts/verify.py` — SymPy verification helpers (`assert_equal`, `check_solutions`, `sample_identity`, `check_steps`). Run `python … verify.py --demo`.
+- `skills/math-verification/scripts/verify.py` — SymPy verification helpers (`assert_equal` with PASS/FAIL/UNDECIDED, `check_solutions`, `check_inequality`, `check_equation_steps` — catches extraneous/lost roots, `sample_identity`, `check_steps`). Run `python … verify.py --demo`.
 - `skills/geometry-figures/scripts/svg_figure.py` — dependency-free SVG figure builder (triangles, circles, polygons, coordinate planes, function graphs, angle/right-angle/equal-side marks); exports student-ready PNG via `svglib` (`save_both`).
 - `skills/geometry-figures/scripts/geo_verify.py` — `sympy.geometry` figure solver (length, angle, area, parallel/perpendicular, similarity/congruence).
 - `skills/problem-bank/scripts/bank.py` — save solved problems as frontmattered notes (filed by grade/unit, deduplicated) and rebuild a Dataview-friendly `INDEX.md`.

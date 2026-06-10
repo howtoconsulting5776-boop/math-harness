@@ -113,7 +113,7 @@ claude "이 학습지 10문제 풀이랑 채점해줘"
 
 ## 번들 도구
 
-- `skills/math-verification/scripts/verify.py` — SymPy 검산 헬퍼(`assert_equal`, `check_solutions`, `sample_identity`, `check_steps`). `python … verify.py --demo`.
+- `skills/math-verification/scripts/verify.py` — SymPy 검산 헬퍼(`assert_equal` PASS/FAIL/UNDECIDED 삼진, `check_solutions`, `check_inequality` 부등식, `check_equation_steps` 외래근·해누락 탐지, `sample_identity`, `check_steps`). `python … verify.py --demo`.
 - `skills/geometry-figures/scripts/svg_figure.py` — 의존성 없는 SVG 작도기(삼각형·원·다각형·좌표평면·함수그래프·각/직각/등변 표시); `svglib`로 학생 배포용 PNG 변환(`save_both`).
 - `skills/geometry-figures/scripts/geo_verify.py` — `sympy.geometry` 도형 풀이(길이·각·넓이·평행/수직·닮음/합동).
 - `skills/problem-bank/scripts/bank.py` — 푼 문제를 frontmatter 노트로 저장(학년/단원 분류·중복 방지)하고 Dataview용 `INDEX.md` 재생성.

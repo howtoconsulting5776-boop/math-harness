@@ -95,9 +95,14 @@ def are_similar(t1, t2):
     """두 삼각형(각각 3점 튜플)이 닮음인지 + 닮음비.
 
     반환: (bool, ratio 또는 None). 변 길이를 정렬해 비율 일치로 판정.
+    정렬 키는 float(배정밀도)가 아니라 50자리 고정밀 평가를 쓴다 —
+    무리수 변 길이가 배정밀도에서 같게 보이면 정렬이 어긋나
+    닮음 판정이 틀릴 수 있다.
     """
-    s1 = sorted(triangle_sides(*t1), key=lambda e: float(e))
-    s2 = sorted(triangle_sides(*t2), key=lambda e: float(e))
+    def _k(e):
+        return sp.N(e, 50)
+    s1 = sorted(triangle_sides(*t1), key=_k)
+    s2 = sorted(triangle_sides(*t2), key=_k)
     ratios = [sp.simplify(x / y) for x, y in zip(s1, s2)]
     same = all(sp.simplify(ratios[0] - r) == 0 for r in ratios)
     return same, (sp.nsimplify(ratios[0]) if same else None)

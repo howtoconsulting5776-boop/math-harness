@@ -26,6 +26,7 @@ import hashlib
 import os
 import re
 import sys
+import unicodedata
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")
@@ -41,8 +42,43 @@ def _slug(text, maxlen=50):
     return (t[:maxlen] or "note").strip("-")
 
 
+# 수학 기호 이형(異形) → ASCII 표준형. 같은 문제가 −(U+2212)와 -(하이픈)로
+# 적혔다는 이유로 다른 해시가 되는 것을 막는다.
+_SYMBOL_MAP = str.maketrans({
+    "−": "-", "–": "-", "—": "-",            # 마이너스/대시 이형
+    "×": "*", "·": "*", "∙": "*", "⋅": "*",  # 곱셈
+    "÷": "/", "∕": "/",                       # 나눗셈
+    "≤": "<=", "≥": ">=", "≠": "!=",
+    "²": "^2", "³": "^3",
+    "（": "(", "）": ")", "［": "[", "］": "]",
+    "，": ",", "．": ".", "：": ":",
+})
+
+
+def _normalize(problem):
+    """해시 전 정규화: NFKC + 수학기호 통일 + 공백 제거 + 라틴 소문자화."""
+    t = unicodedata.normalize("NFKC", problem or "")
+    t = t.translate(_SYMBOL_MAP)
+    t = re.sub(r"\s+", "", t)
+    return t.casefold()
+
+
 def _phash(problem):
-    norm = re.sub(r"\s+", "", problem or "")
+    """정확 중복 해시 — 정규화 후 동일 텍스트면 같은 문제."""
+    return hashlib.sha1(_normalize(problem).encode("utf-8")).hexdigest()[:10]
+
+
+def _shash(problem):
+    """구조 해시 — 숫자를 #로 추상화해 '숫자만 바꾼 변형'이 같은 값을 갖는다.
+
+    예: '3(x-2)=x+4'와 '5(x-1)=x+7'은 phash는 다르지만 shash는 같다.
+    숫자가 바뀌면 뒤따르는 조사도 바뀌므로(4를→8을) 받침 유무 조사쌍을
+    통일한다. 변형 문제 군집·유사 문제 추천(복습 루프)의 키로 쓴다.
+    """
+    norm = re.sub(r"\d+(\.\d+)?", "#", _normalize(problem))
+    for pair, rep in ((r"[을를]", "을"), (r"[이가]", "이"),
+                      (r"[은는]", "은"), (r"[과와]", "과")):
+        norm = re.sub(rf"(?<=#){pair}", rep, norm)
     return hashlib.sha1(norm.encode("utf-8")).hexdigest()[:10]
 
 
@@ -90,10 +126,15 @@ def save_note(bank_dir, meta, problem, sections, *, figure=None, overwrite=False
         "type": meta.get("type", "풀이"),
         "answer": meta.get("answer", ""),
         "verified": bool(meta.get("verified", False)),
+        # 검증 '수준' — 무엇이 기계로 보장됐는지. verify.py의 METHODS와 짝:
+        # 기호검증 | 해집합 | 수치표본 | 동치변형 | 좌표기하 | 미검증
+        "verify_method": str(meta.get("verify_method", "")
+                             or ("미검증" if not meta.get("verified") else "")),
         "tags": meta.get("tags", []),
         "source": meta.get("source", ""),
         "created": meta.get("created", _today()),
         "problem_hash": phash,
+        "structure_hash": _shash(problem),
     }
     lines = ["---"]
     for k, v in fm.items():
@@ -134,6 +175,33 @@ def _read_frontmatter(path):
     return out
 
 
+def find_similar(bank_dir, problem):
+    """같은 구조(숫자만 다른 변형)의 기존 노트를 찾는다.
+
+    반환: [{'path','title','grade','unit','answer'}...] — 정확 중복(phash 동일)은
+    제외하고 구조 해시만 같은 변형들. '이 학생이 틀린 문제의 구조적 쌍둥이'를
+    복습 추천하거나, 출제 시 기존 변형과의 충돌을 확인하는 데 쓴다.
+    """
+    target_s, target_p = _shash(problem), _phash(problem)
+    out = []
+    if not os.path.isdir(bank_dir):
+        return out
+    for root, _, files in os.walk(bank_dir):
+        for fn in files:
+            if not fn.endswith(".md") or fn == "INDEX.md":
+                continue
+            p = os.path.join(root, fn)
+            fm = _read_frontmatter(p)
+            if (fm.get("structure_hash") == target_s
+                    and fm.get("problem_hash") != target_p):
+                out.append({"path": os.path.relpath(p, bank_dir).replace("\\", "/"),
+                            "title": fm.get("title", ""),
+                            "grade": fm.get("grade", ""),
+                            "unit": fm.get("unit", ""),
+                            "answer": fm.get("answer", "")})
+    return out
+
+
 def rebuild_index(bank_dir):
     """bank_dir 전체를 스캔해 INDEX.md를 학년>단원으로 묶어 생성."""
     entries = []
@@ -155,7 +223,7 @@ def rebuild_index(bank_dir):
            f"총 {len(entries)}문제. 학년 > 단원으로 정리. "
            "Dataview가 있으면 아래 쿼리로 동적 표를 볼 수 있다.", ""]
     # Dataview 동적 표(옵션)
-    out += ["```dataview", "TABLE grade, unit, difficulty, type, verified, answer",
+    out += ["```dataview", "TABLE grade, unit, difficulty, type, verified, verify_method, answer",
             "FROM \"\"", "WHERE problem_hash", "SORT grade ASC, unit ASC", "```", ""]
     for grade in sorted(by_grade):
         out.append(f"## {grade}")
@@ -166,8 +234,10 @@ def rebuild_index(bank_dir):
                 chk = "✅" if e.get("verified") else "⬜"
                 diff = e.get("difficulty", "")
                 ans = e.get("answer", "")
+                vm = e.get("verify_method", "")
+                vm_s = f" · {vm}" if vm and vm != "미검증" else ""
                 out.append(f"- {emo} {chk} [[{e['_path']}|{e.get('title')}]] "
-                           f"<sub>{diff} · 답: {ans}</sub>")
+                           f"<sub>{diff} · 답: {ans}{vm_s}</sub>")
             out.append("")
     path = os.path.join(bank_dir, "INDEX.md")
     with open(path, "w", encoding="utf-8") as f:
@@ -193,10 +263,18 @@ def _demo():
     p3, c3 = save_note(bank,
         {"title": "중복", "grade": "중2", "unit": "일차방정식"},
         problem="3(x-2)=x+4 를 풀어라.", sections={"풀이": "x"})
+    # 유니코드 마이너스(−)로 적은 같은 문제 — 정규화로 중복 잡혀야 함
+    p4, c4 = save_note(bank,
+        {"title": "유니코드 중복", "grade": "중1", "unit": "일차부등식"},
+        problem="−2x<6 을 풀어라.", sections={"풀이": "x"})
+    # 숫자만 바꾼 변형 — find_similar로 군집 탐지
+    sim = find_similar(bank, "5(x-1)=x+8 을 풀어라.")
     idx, n = rebuild_index(bank)
     print(f"saved: {p1} (created={c1})")
     print(f"saved: {p2} (created={c2})")
     print(f"dup check: created={c3} (False이면 중복 방지 동작)")
+    print(f"unicode dup: created={c4} (False이면 정규화 해시 동작)")
+    print(f"similar variants of '5(x-1)=x+8': {[s['title'] for s in sim]}")
     print(f"index: {idx} ({n}문제)")
 
 
