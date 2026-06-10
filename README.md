@@ -48,7 +48,7 @@ solver (solution) ──► verifier (independent re-derivation)
 ## Install
 
 ```bash
-claude plugin marketplace add YOUR_GITHUB_USERNAME/math-harness
+claude plugin marketplace add howtoconsulting5776-boop/math-harness
 claude plugin install math-harness@math-harness-marketplace
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1   # team mode
 ```

@@ -12,10 +12,10 @@
 ## Step 1 — Add the marketplace (60s)
 
 ```bash
-claude plugin marketplace add YOUR_GITHUB_USERNAME/math-harness
+claude plugin marketplace add howtoconsulting5776-boop/math-harness
 ```
 
-> Replace `YOUR_GITHUB_USERNAME` with the account you push this repo to. For purely local use, you can instead run `claude plugin marketplace add ./` from the repo root.
+> For purely local use (before pushing to GitHub), you can instead run `claude plugin marketplace add ./` from the repo root.
 
 ## Step 2 — Install the plugin + enable teams (40s)
 

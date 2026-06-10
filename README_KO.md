@@ -48,7 +48,7 @@ solver(풀이) ──► verifier(독립 재유도)
 ## 설치
 
 ```bash
-claude plugin marketplace add YOUR_GITHUB_USERNAME/math-harness
+claude plugin marketplace add howtoconsulting5776-boop/math-harness
 claude plugin install math-harness@math-harness-marketplace
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1   # 팀 모드
 ```
